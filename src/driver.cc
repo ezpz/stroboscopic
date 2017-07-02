@@ -8,7 +8,7 @@
 
 #include "strobe.hh"
 
-void update (struct GameState &s) {
+void update (struct GameState &s, const Rectangle &flash) {
 
     if (s.paused) { return; }
 
@@ -26,6 +26,7 @@ void update (struct GameState &s) {
         for (; SIT != SEND; ++SIT) {
             SIT->Draw (s.ref_mark.Angle ());
         }
+        flash.Draw ();
     }
 
     s.border.Draw ();
@@ -44,6 +45,15 @@ void handle_key_down (const ALLEGRO_EVENT &event, GameState &state) {
     }
 }
 
+/*
+ * Flash is the angle step at which the capture flash will occur
+ */
+void generate_shape (std::vector< Segment > &segments, float flash) {
+    segments.push_back (Segment (
+                PolarPoint(WIDTH / 4.0, -45.0), 
+                PolarPoint(WIDTH / 4.0, -60.0)));
+}
+
 int main (int argc, char **argv) {
     ALLEGRO_EVENT_QUEUE *events = NULL;
     ALLEGRO_DISPLAY *screen = NULL;
@@ -55,12 +65,8 @@ int main (int argc, char **argv) {
           hq = hhalf / 2.0;
 
     Rectangle capture(WIDTH / 2.0, hhalf - hq, WIDTH, hhalf + hq);
-    //state.flash.Set (WIDTH / 2.0, hhalf - hq, WIDTH, hhalf + hq);
 
-    RadialPoint p1(whalf / 2.0, -45.0);
-    RadialPoint p2(whalf / 2.0, -60.0);
-
-    state.segments.push_back (Segment (p1, p2));
+    generate_shape (state.segments, 15.0);
 
     if (! al_init ()) {
         fprintf (stderr, "Failed to init allegro\n");
@@ -102,7 +108,7 @@ int main (int argc, char **argv) {
 
         switch (event.type) {
             case ALLEGRO_EVENT_TIMER:
-                update (state);
+                update (state, capture);
                 break;
             case ALLEGRO_EVENT_DISPLAY_CLOSE:
                 state.running = false;

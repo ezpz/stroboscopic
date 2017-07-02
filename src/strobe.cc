@@ -8,9 +8,15 @@
 
 #include "strobe.hh"
 
-Point RadialPoint::GetXY (float angle) const {
-    float x = cx_ + radius_ * cos (RADIANS(angle_ + angle));
-    float y = cy_ + radius_ * sin (RADIANS(angle_ + angle));
+PolarPoint Point::GetPolar () const {
+    float radius = sqrtf (x_ * x_ + y_ * y_);
+    float angle = atan2 (y_, x_);
+    return PolarPoint (radius, angle);
+}
+
+Point PolarPoint::GetXY (float angle) const {
+    float x = cx_ + radius_ * cosf (RADIANS(angle_ + angle));
+    float y = cy_ + radius_ * sinf (RADIANS(angle_ + angle));
     return Point(x,y);
 }
 

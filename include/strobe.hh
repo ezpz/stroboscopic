@@ -16,6 +16,8 @@
 
 ALLEGRO_COLOR mkcol (int r, int g, int b, int a);
 
+class PolarPoint;
+
 /* 
  * Basic cartesian point
  */
@@ -28,19 +30,21 @@ public:
     Point (float x, float y) : x_(x), y_(y) {}
     inline float GetX () const { return x_; }
     inline float GetY () const { return y_; }
+
+    PolarPoint GetPolar () const;
 };
 
 /*
  * Points are represented by a distance from the origin and
  * a rotation from the x-axis
  */
-class RadialPoint {
+class PolarPoint {
 
     float radius_, angle_, cx_, cy_;
 
 public:
 
-    RadialPoint (float radius, float angle) : 
+    PolarPoint (float radius, float angle) : 
         radius_(radius), angle_(angle), cx_(WIDTH / 2.0), cy_(HEIGHT / 2.0) {}
     Point GetXY (float angle) const;
 };
@@ -50,20 +54,20 @@ public:
  */
 class Segment {
 
-    RadialPoint p1_, p2_;
+    PolarPoint p1_, p2_;
     ALLEGRO_COLOR col_;
     
 public:
 
-    Segment (const RadialPoint &p1, const RadialPoint &p2) : 
+    Segment (const PolarPoint &p1, const PolarPoint &p2) : 
         p1_(p1), p2_(p2), col_(mkcol (0, 0, 255, 255)) {}
 
     inline void Draw (float angle) const {
         Draw (angle, col_);
     }
 
-    inline const RadialPoint& GetStart () const { return p1_; } 
-    inline const RadialPoint& GetEnd () const { return p2_; } 
+    inline const PolarPoint& GetStart () const { return p1_; } 
+    inline const PolarPoint& GetEnd () const { return p2_; } 
 
     void Draw (float angle, ALLEGRO_COLOR col) const;
 };
@@ -110,8 +114,8 @@ public:
 
     Reference () : angle_(0.0), looped_(false),
         tick_(Segment(
-                    RadialPoint (WIDTH/2.0 - 15, 0), 
-                    RadialPoint (WIDTH/2.0, 0))),
+                    PolarPoint (WIDTH/2.0 - 15, 0), 
+                    PolarPoint (WIDTH/2.0, 0))),
         col_(mkcol (30, 255, 10, 255)) {}
 
     inline float Angle () const { return angle_; }
