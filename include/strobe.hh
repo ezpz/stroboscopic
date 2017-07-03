@@ -107,7 +107,7 @@ public:
 
     FadeSegment (const Segment &seg) : p1_(seg.GetStart ()),
         p2_(seg.GetEnd ()), col_(mkcol (255, 255, 255, 255)),
-        opacity_(255.0), step_(THETA_DELTA * 0.67), gone_(false) {}
+        opacity_(255.0), step_(THETA_DELTA * 0.75), gone_(false) {}
 
     inline bool Remove () const { return gone_; }
 
@@ -198,12 +198,12 @@ public:
 };
 
 struct GameState {
-    bool running, paused, debug;
+    bool running, paused, debug, step;
     Border border;
     Reference ref_mark;
     std::vector< Segment > segments;
     std::vector< FadeSegment > fade;
-    GameState () : running(true), paused(false), debug(false) {}
+    GameState () : running(true), paused(false), debug(false), step(false) {}
 };
 
 #endif /*STROBE_HH__*/

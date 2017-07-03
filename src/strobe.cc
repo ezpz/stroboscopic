@@ -55,11 +55,11 @@ bool Rectangle::Contains (const Segment &seg, float theta) const {
     float x = start.GetX (), y = start.GetY ();
 
     start_in = ((x > p1_.GetX () && x < p2_.GetX ()) && 
-            (y > p1_.GetY () && y < p2_.GetY ()));
+            (y > p2_.GetY () && y < p1_.GetY ()));
     x = end.GetX ();
     y = end.GetY ();
     end_in = ((x > p1_.GetX () && x < p2_.GetX ()) && 
-            (y > p1_.GetY () && y < p2_.GetY ()));
+            (y > p2_.GetY () && y < p1_.GetY ()));
     return (start_in && end_in);
 }
 

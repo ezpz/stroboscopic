@@ -13,7 +13,8 @@
 
 void collect_overlap (GameState &s, const Rectangle &flash) {
     float theta = s.ref_mark.Theta ();
-    if (static_cast< long >(theta) % static_cast< long >(TARGET_THETA)) { 
+
+    if (0.0 != fmodf (theta, TARGET_THETA)) {
         return; /* not on the period of the flash */
     }
     flash.Draw ();
@@ -67,13 +68,18 @@ void update (GameState &s, const Rectangle &flash) {
 
     s.border.Draw ();
 
+    if (s.debug && s.step) {
+        s.paused = true;
+    }
+
     al_flip_display ();
 
 }
 
 void handle_key_down (const ALLEGRO_EVENT &event, GameState &state) {
     if (event.type == ALLEGRO_EVENT_KEY_DOWN) {
-        if (event.keyboard.keycode == ALLEGRO_KEY_ESCAPE) {
+        if (event.keyboard.keycode == ALLEGRO_KEY_ESCAPE ||
+                event.keyboard.keycode == ALLEGRO_KEY_Q) {
             state.running = false;
         }
         if (event.keyboard.keycode == ALLEGRO_KEY_SPACE) {
@@ -81,6 +87,11 @@ void handle_key_down (const ALLEGRO_EVENT &event, GameState &state) {
         }
         if (event.keyboard.keycode == ALLEGRO_KEY_D) {
             state.debug = ! state.debug;
+        }
+        if (event.keyboard.keycode == ALLEGRO_KEY_S) {
+            if (state.debug) {
+                state.step = ! state.step;
+            }
         }
     }
 }
@@ -144,11 +155,9 @@ int main (int argc, char **argv) {
     ALLEGRO_TIMER *update_timer = NULL;
     GameState state;
 
-    float whalf = WIDTH / 2.0,
-          hhalf = HEIGHT / 2.0,
-          hq = hhalf / 2.0;
-
-    Rectangle capture(WIDTH / 2.0, hhalf - hq, WIDTH, hhalf + hq);
+    float hw = WIDTH / 2.0,
+          hh = HEIGHT / 2.0;
+    Rectangle capture(hw + 50.0, hh + 50.0, hw + 250.0, hh - 150.0);
 
     srand (time (NULL));
 
