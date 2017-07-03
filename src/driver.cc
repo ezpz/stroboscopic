@@ -49,9 +49,9 @@ void update (struct GameState &s, const Rectangle &flash) {
         std::vector< Segment >::iterator SIT = s.segments.begin (), 
             SEND = s.segments.end ();
         for (; SIT != SEND; ++SIT) {
-            SIT->Draw (s.ref_mark.Angle ());
+            SIT->Draw (s.ref_mark.Theta ());
         }
-        check_overlap (s.segments, flash, s.ref_mark.Angle ());
+        check_overlap (s.segments, flash, s.ref_mark.Theta ());
     }
 
     s.border.Draw ();
@@ -71,7 +71,7 @@ void handle_key_down (const ALLEGRO_EVENT &event, GameState &state) {
 }
 
 /*
- * theta is the angle step at which the capture flash will occur
+ * theta is the step at which the capture flash will occur
  */
 void generate_shape (std::vector< Segment > &segments, float theta) {
     /*

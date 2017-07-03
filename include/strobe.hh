@@ -8,9 +8,9 @@
 #define WIDTH 600
 #define HEIGHT 600
 #define FPS 60.0
-#define ANGLE_MAX 360.0
-#define ANGLE_STEPS 60.0
-#define ANGLE_DELTA (ANGLE_MAX / ANGLE_STEPS)
+#define THETA_MAX 360.0
+#define THETA_STEPS 60.0
+#define THETA_DELTA (THETA_MAX / THETA_STEPS)
 
 #define RADIANS(deg) ((deg) * 0.0174533)
 #define DEGREES(rad) ((rad) * 57.2958)
@@ -48,19 +48,19 @@ public:
  */
 class PolarPoint {
 
-    float radius_, angle_, cx_, cy_;
+    float radius_, theta_, cx_, cy_;
 
 public:
 
-    PolarPoint (float radius, float angle) : 
-        radius_(radius), angle_(angle), cx_(WIDTH / 2.0), cy_(HEIGHT / 2.0) {}
+    PolarPoint (float radius, float theta) : 
+        radius_(radius), theta_(theta), cx_(WIDTH / 2.0), cy_(HEIGHT / 2.0) {}
 
     inline float GetRadius () const { return radius_; }
-    inline float GetTheta () const { return angle_; }
+    inline float GetTheta () const { return theta_; }
 
-    inline void Rotate (float theta) { angle_ += theta; }
+    inline void Rotate (float theta) { theta_ += theta; }
 
-    Point GetXY (float angle) const;
+    Point GetXY (float theta) const;
 };
 
 /*
@@ -76,8 +76,8 @@ public:
     Segment (const PolarPoint &p1, const PolarPoint &p2) : 
         p1_(p1), p2_(p2), col_(mkcol (0, 0, 255, 255)) {}
 
-    inline void Draw (float angle) const {
-        Draw (angle, col_);
+    inline void Draw (float theta) const {
+        Draw (theta, col_);
     }
 
     inline const PolarPoint& GetStart () const { return p1_; } 
@@ -88,7 +88,7 @@ public:
         p2_.Rotate (theta);
     }
 
-    void Draw (float angle, ALLEGRO_COLOR col) const;
+    void Draw (float theta, ALLEGRO_COLOR col) const;
 
     Segment SaveAt (float theta) const;
 };
@@ -117,7 +117,7 @@ public:
     }
 
     void Draw (ALLEGRO_COLOR col) const;
-    bool Contains (const Segment &seg, float angle) const;
+    bool Contains (const Segment &seg, float theta) const;
 
 };
 
@@ -126,20 +126,20 @@ public:
  */
 class Reference {
 
-    float angle_;
+    float theta_;
     bool looped_;
     Segment tick_; /* for visual reference only */
     ALLEGRO_COLOR col_;
 
 public:
 
-    Reference () : angle_(0.0), looped_(false),
+    Reference () : theta_(0.0), looped_(false),
         tick_(Segment(
                     PolarPoint (WIDTH/2.0 - 15, 0), 
                     PolarPoint (WIDTH/2.0, 0))),
         col_(mkcol (30, 255, 10, 255)) {}
 
-    inline float Angle () const { return angle_; }
+    inline float Theta () const { return theta_; }
     inline bool Looped () const { return looped_; }
 
     inline void Draw () const {

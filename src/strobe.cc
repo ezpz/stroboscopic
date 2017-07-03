@@ -10,19 +10,19 @@
 
 PolarPoint Point::GetPolar () const {
     float radius = sqrtf (x_ * x_ + y_ * y_);
-    float angle = DEGREES(atan2 (y_, x_));
-    return PolarPoint (radius, angle);
+    float theta = DEGREES(atan2 (y_, x_));
+    return PolarPoint (radius, theta);
 }
 
-Point PolarPoint::GetXY (float angle) const {
-    float x = cx_ + radius_ * cosf (RADIANS(angle_ + angle));
-    float y = cy_ + radius_ * sinf (RADIANS(angle_ + angle));
+Point PolarPoint::GetXY (float theta) const {
+    float x = cx_ + radius_ * cosf (RADIANS(theta_ + theta));
+    float y = cy_ + radius_ * sinf (RADIANS(theta_ + theta));
     return Point(x,y);
 }
 
-void Segment::Draw (float angle, ALLEGRO_COLOR col) const {
-    Point p1 = p1_.GetXY (angle);
-    Point p2 = p2_.GetXY (angle);
+void Segment::Draw (float theta, ALLEGRO_COLOR col) const {
+    Point p1 = p1_.GetXY (theta);
+    Point p2 = p2_.GetXY (theta);
     al_draw_line (p1.GetX (), p1.GetY (), p2.GetX (), p2.GetY (), col, 1);
 }
 
@@ -37,9 +37,9 @@ void Rectangle::Draw (ALLEGRO_COLOR col) const {
             p2_.GetX (), p2_.GetY (), col);
 }
 
-bool Rectangle::Contains (const Segment &seg, float angle) const {
-    Point start = seg.GetStart ().GetXY (angle);
-    Point end = seg.GetEnd ().GetXY (angle);
+bool Rectangle::Contains (const Segment &seg, float theta) const {
+    Point start = seg.GetStart ().GetXY (theta);
+    Point end = seg.GetEnd ().GetXY (theta);
     bool start_in = false, end_in = false;
     float x = start.GetX (), y = start.GetY ();
 
@@ -54,13 +54,13 @@ bool Rectangle::Contains (const Segment &seg, float angle) const {
 
 
 void Reference::Draw (ALLEGRO_COLOR col) const {
-    tick_.Draw (Angle (), col);
+    tick_.Draw (Theta (), col);
 }
 
 void Reference::Tick () {
-    angle_ += ANGLE_DELTA;
-    if (angle_ >= ANGLE_MAX) {
-        angle_ -= ANGLE_MAX;
+    theta_ += THETA_DELTA;
+    if (theta_ >= THETA_MAX) {
+        theta_ -= THETA_MAX;
         looped_ = true;
     } else {
         looped_ = false;
