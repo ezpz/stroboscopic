@@ -94,6 +94,28 @@ public:
 };
 
 /*
+ * Line segment that will fade a bit every time it is drawn
+ */
+class FadeSegment {
+    
+    PolarPoint p1_, p2_;
+    ALLEGRO_COLOR col_;
+    float opacity_, step_;
+    bool gone_;
+
+public:
+
+    FadeSegment (const Segment &seg) : p1_(seg.GetStart ()),
+        p2_(seg.GetEnd ()), col_(mkcol (255, 255, 255, 255)),
+        opacity_(255.0), step_(THETA_DELTA * 0.67), gone_(false) {}
+
+    inline bool Remove () const { return gone_; }
+
+    void Draw ();
+
+};
+
+/*
  * Basic rectangel overlayed on a fixed portion of the display.
  * This is *not* represented in polar coordinates and does *not* rotate
  * about the centerpoint as segments to
@@ -176,11 +198,12 @@ public:
 };
 
 struct GameState {
-    bool running, paused;
+    bool running, paused, debug;
     Border border;
     Reference ref_mark;
     std::vector< Segment > segments;
-    GameState () : running(true), paused(false) {}
+    std::vector< FadeSegment > fade;
+    GameState () : running(true), paused(false), debug(false) {}
 };
 
 #endif /*STROBE_HH__*/

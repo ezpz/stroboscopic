@@ -32,6 +32,17 @@ Segment Segment::SaveAt (float theta) const {
             PolarPoint (b.GetRadius (), b.GetTheta () + theta));
 }
 
+void FadeSegment::Draw () {
+    Point p1 = p1_.GetXY (0);
+    Point p2 = p2_.GetXY (0);
+    al_draw_line (p1.GetX (), p1.GetY (), p2.GetX (), p2.GetY (), col_, 3);
+    opacity_ -= step_;
+    if (opacity_ <= 0.0) {
+        gone_ = true;
+    }
+    col_ = mkcol (255, 255, 255, opacity_);
+}
+
 void Rectangle::Draw (ALLEGRO_COLOR col) const {
     al_draw_filled_rectangle (p1_.GetX (), p1_.GetY(),
             p2_.GetX (), p2_.GetY (), col);

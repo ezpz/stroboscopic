@@ -11,53 +11,64 @@
 
 #define TARGET_THETA 60.0
 
-std::vector< Segment > captured;
-
-void check_overlap (const std::vector< Segment > &segments, 
-        const Rectangle& flash, float theta) {
+void collect_overlap (GameState &s, const Rectangle &flash) {
+    float theta = s.ref_mark.Theta ();
     if (static_cast< long >(theta) % static_cast< long >(TARGET_THETA)) { 
         return; /* not on the period of the flash */
     }
     flash.Draw ();
-    std::vector< Segment >::const_iterator SIT = segments.begin (),
-        SEND = segments.end ();
+    std::vector< Segment >::const_iterator SIT = s.segments.begin (),
+        SEND = s.segments.end ();
     for (; SIT != SEND; ++SIT) {
         if (flash.Contains (*SIT, theta)) {
-            captured.push_back (SIT->SaveAt (theta));
+            s.fade.push_back (SIT->SaveAt (theta));
         }
     }
 }
 
-void update (struct GameState &s, const Rectangle &flash) {
+void update (GameState &s, const Rectangle &flash) {
 
     if (s.paused) { return; }
+
+    std::vector< FadeSegment > tmp;
 
     al_clear_to_color (al_map_rgb (0, 0, 0));
 
     s.ref_mark.Draw ();
     s.ref_mark.Tick ();
 
-    check_overlap (s.segments, flash, s.ref_mark.Theta ());
+    collect_overlap (s, flash);
 
-    if (s.ref_mark.Looped ()) {
-        std::vector< Segment >::iterator SIT = captured.begin (), 
-            SEND = captured.end ();
-        for (; SIT != SEND; ++SIT) {
-            SIT->Draw (0, mkcol (255, 69, 0, 255));
-        }
-        s.paused = true;
-        captured.clear ();
-    } else {
-        std::vector< Segment >::iterator SIT = s.segments.begin (), 
+    /* if debugging is requested, show the underlying segments as well */
+    if (s.debug) {
+        std::vector< Segment >::const_iterator SIT = s.segments.begin (),
             SEND = s.segments.end ();
         for (; SIT != SEND; ++SIT) {
             SIT->Draw (s.ref_mark.Theta ());
         }
     }
 
+    std::vector< FadeSegment >::iterator FIT = s.fade.begin (), 
+        FEND = s.fade.end ();
+    for (; FIT != FEND; ++FIT) {
+        FIT->Draw ();
+    }
+
+    tmp.reserve (s.fade.size ());
+    std::swap (tmp, s.fade);
+    s.fade.clear ();
+    FIT = tmp.begin ();
+    FEND = tmp.end ();
+    for (; FIT != FEND; ++FIT) {
+        if (! FIT->Remove ()) {
+            s.fade.push_back (*FIT);
+        }
+    }
+
     s.border.Draw ();
 
     al_flip_display ();
+
 }
 
 void handle_key_down (const ALLEGRO_EVENT &event, GameState &state) {
@@ -67,6 +78,9 @@ void handle_key_down (const ALLEGRO_EVENT &event, GameState &state) {
         }
         if (event.keyboard.keycode == ALLEGRO_KEY_SPACE) {
             state.paused = ! state.paused;
+        }
+        if (event.keyboard.keycode == ALLEGRO_KEY_D) {
+            state.debug = ! state.debug;
         }
     }
 }
