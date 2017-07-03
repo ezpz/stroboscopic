@@ -24,17 +24,17 @@ class PolarPoint;
  */
 class Point {
 
-    float x_, y_;
+    double x_, y_;
 
 public:
 
-    Point (float x, float y) : x_(x), y_(y) {}
+    Point (double x, double y) : x_(x), y_(y) {}
     Point () : x_(0.0), y_(0.0) {}
 
-    inline float GetX () const { return x_; }
-    inline float GetY () const { return y_; }
+    inline double GetX () const { return x_; }
+    inline double GetY () const { return y_; }
 
-    inline void Set (float x, float y) { 
+    inline void Set (double x, double y) { 
         x_ = x; 
         y_ = y;
     }
@@ -48,19 +48,19 @@ public:
  */
 class PolarPoint {
 
-    float radius_, theta_, cx_, cy_;
+    double radius_, theta_, cx_, cy_;
 
 public:
 
-    PolarPoint (float radius, float theta) : 
+    PolarPoint (double radius, double theta) : 
         radius_(radius), theta_(theta), cx_(WIDTH / 2.0), cy_(HEIGHT / 2.0) {}
 
-    inline float GetRadius () const { return radius_; }
-    inline float GetTheta () const { return theta_; }
+    inline double GetRadius () const { return radius_; }
+    inline double GetTheta () const { return theta_; }
 
-    inline void Rotate (float theta) { theta_ += theta; }
+    inline void Rotate (double theta) { theta_ += theta; }
 
-    Point GetXY (float theta) const;
+    Point GetXY (double theta) const;
 };
 
 /*
@@ -76,21 +76,21 @@ public:
     Segment (const PolarPoint &p1, const PolarPoint &p2) : 
         p1_(p1), p2_(p2), col_(mkcol (0, 0, 255, 255)) {}
 
-    inline void Draw (float theta) const {
+    inline void Draw (double theta) const {
         Draw (theta, col_);
     }
 
     inline const PolarPoint& GetStart () const { return p1_; } 
     inline const PolarPoint& GetEnd () const { return p2_; } 
 
-    inline void Rotate (float theta) {  
+    inline void Rotate (double theta) {  
         p1_.Rotate (theta);
         p2_.Rotate (theta);
     }
 
-    void Draw (float theta, ALLEGRO_COLOR col) const;
+    void Draw (double theta, ALLEGRO_COLOR col) const;
 
-    Segment SaveAt (float theta) const;
+    Segment SaveAt (double theta) const;
 };
 
 /*
@@ -100,7 +100,7 @@ class FadeSegment {
     
     PolarPoint p1_, p2_;
     ALLEGRO_COLOR col_;
-    float opacity_, step_;
+    double opacity_, step_;
     bool gone_;
 
 public:
@@ -128,7 +128,7 @@ class Rectangle {
 
 public:
 
-    Rectangle (float x1, float y1, float x2, float y2) : 
+    Rectangle (double x1, double y1, double x2, double y2) : 
         p1_(x1,y1), p2_(x2,y2), col_(mkcol(255,255,255,30)) {}
 
     Rectangle (const Point &p1, const Point &p2) : 
@@ -139,7 +139,7 @@ public:
     }
 
     void Draw (ALLEGRO_COLOR col) const;
-    bool Contains (const Segment &seg, float theta) const;
+    bool Contains (const Segment &seg, double theta) const;
 
 };
 
@@ -148,7 +148,7 @@ public:
  */
 class Reference {
 
-    float theta_;
+    double theta_;
     bool looped_;
     Segment tick_; /* for visual reference only */
     ALLEGRO_COLOR col_;
@@ -161,7 +161,7 @@ public:
                     PolarPoint (WIDTH/2.0, 0))),
         col_(mkcol (30, 255, 10, 255)) {}
 
-    inline float Theta () const { return theta_; }
+    inline double Theta () const { return theta_; }
     inline bool Looped () const { return looped_; }
 
     inline void Draw () const {
@@ -179,12 +179,12 @@ public:
  */
 class Border {
 
-    float cx_, cy_, radius_;
+    double cx_, cy_, radius_;
     ALLEGRO_COLOR col_;
 
 public:
 
-    Border (float radius) : cx_(WIDTH / 2.0), cy_(HEIGHT / 2.0), 
+    Border (double radius) : cx_(WIDTH / 2.0), cy_(HEIGHT / 2.0), 
             radius_(radius), col_(mkcol(255, 0, 0, 255)) {}
 
     Border () : cx_(WIDTH / 2.0), cy_(HEIGHT / 2.0),

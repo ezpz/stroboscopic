@@ -12,9 +12,9 @@
 #define TARGET_THETA 60.0
 
 void collect_overlap (GameState &s, const Rectangle &flash) {
-    float theta = s.ref_mark.Theta ();
+    double theta = s.ref_mark.Theta ();
 
-    if (0.0 != fmodf (theta, TARGET_THETA)) {
+    if (0.0 != fmod (theta, TARGET_THETA)) {
         return; /* not on the period of the flash */
     }
     flash.Draw ();
@@ -99,13 +99,13 @@ void handle_key_down (const ALLEGRO_EVENT &event, GameState &state) {
 /*
  * theta is the step at which the capture flash will occur
  */
-void generate_shape (std::vector< Segment > &segments, float theta) {
+void generate_shape (std::vector< Segment > &segments, double theta) {
     /*
      * Simple test of a 'box' described in cartesian coordinates
      * and randomized in polar 
      */
 
-    float step = 20.0, xoff = 100.0;
+    double step = 20.0, xoff = 100.0;
     Point p1, p2;
 
     /* bottom */
@@ -149,14 +149,14 @@ void generate_shape (std::vector< Segment > &segments, float theta) {
     }
 }
 
-int main (int argc, char **argv) {
+int main () {
     ALLEGRO_EVENT_QUEUE *events = NULL;
     ALLEGRO_DISPLAY *screen = NULL;
     ALLEGRO_TIMER *update_timer = NULL;
     GameState state;
 
-    float hw = WIDTH / 2.0,
-          hh = HEIGHT / 2.0;
+    double hw = WIDTH / 2.0,
+           hh = HEIGHT / 2.0;
     Rectangle capture(hw + 50.0, hh + 50.0, hw + 250.0, hh - 150.0);
 
     srand (time (NULL));

@@ -9,24 +9,24 @@
 #include "strobe.hh"
 
 PolarPoint Point::GetPolar () const {
-    float radius = sqrtf (x_ * x_ + y_ * y_);
-    float theta = DEGREES(atan2 (y_, x_));
+    double radius = sqrt (x_ * x_ + y_ * y_);
+    double theta = DEGREES(atan2 (y_, x_));
     return PolarPoint (radius, theta);
 }
 
-Point PolarPoint::GetXY (float theta) const {
-    float x = cx_ + radius_ * cosf (RADIANS(theta_ + theta));
-    float y = cy_ + radius_ * sinf (RADIANS(theta_ + theta));
+Point PolarPoint::GetXY (double theta) const {
+    double x = cx_ + radius_ * cos (RADIANS(theta_ + theta));
+    double y = cy_ + radius_ * sin (RADIANS(theta_ + theta));
     return Point(x,y);
 }
 
-void Segment::Draw (float theta, ALLEGRO_COLOR col) const {
+void Segment::Draw (double theta, ALLEGRO_COLOR col) const {
     Point p1 = p1_.GetXY (theta);
     Point p2 = p2_.GetXY (theta);
     al_draw_line (p1.GetX (), p1.GetY (), p2.GetX (), p2.GetY (), col, 1);
 }
 
-Segment Segment::SaveAt (float theta) const {
+Segment Segment::SaveAt (double theta) const {
     PolarPoint a = GetStart (), b = GetEnd ();
     return Segment (PolarPoint (a.GetRadius (), a.GetTheta () + theta),
             PolarPoint (b.GetRadius (), b.GetTheta () + theta));
@@ -48,11 +48,17 @@ void Rectangle::Draw (ALLEGRO_COLOR col) const {
             p2_.GetX (), p2_.GetY (), col);
 }
 
-bool Rectangle::Contains (const Segment &seg, float theta) const {
+bool Rectangle::Contains (const Segment &seg, double theta) const {
     Point start = seg.GetStart ().GetXY (theta);
     Point end = seg.GetEnd ().GetXY (theta);
     bool start_in = false, end_in = false;
-    float x = start.GetX (), y = start.GetY ();
+    double x = start.GetX (), y = start.GetY ();
+
+    /*
+     * FIXME: This comparison only works for areas that reside below
+     * the y = HEIGHT / 2.0 horizon.
+     * Adjust to work for every quadrant
+     */
 
     start_in = ((x > p1_.GetX () && x < p2_.GetX ()) && 
             (y > p2_.GetY () && y < p1_.GetY ()));
