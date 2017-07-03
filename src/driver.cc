@@ -157,8 +157,7 @@ int main (int argc, char **argv) {
         return 1;
     }
 
-    //update_timer = al_create_timer (1.0 / FPS);
-    update_timer = al_create_timer (5.0 / FPS);
+    update_timer = al_create_timer (1.0 / FPS);
     if (NULL == update_timer) {
         fprintf (stderr, "Failed to create update timer\n");
         return 1;
