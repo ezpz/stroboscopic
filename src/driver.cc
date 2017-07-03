@@ -8,7 +8,7 @@
 
 #include "strobe.hh"
 
-#define TARGET_THETA 30.0
+#define TARGET_THETA 60.0
 
 std::vector< Segment > captured;
 
@@ -79,35 +79,35 @@ void generate_shape (std::vector< Segment > &segments, float theta) {
      * and randomized in polar 
      */
 
-    float step = 20.0;
+    float step = 20.0, xoff = 100.0;
     Point p1, p2;
 
     /* bottom */
     for (int i = 0; i < 4; ++i) {
-        p1.Set (step * i,         0.0);
-        p2.Set (step * (i + 1),   0.0);
+        p1.Set (xoff + step * i,         0.0);
+        p2.Set (xoff + step * (i + 1),   0.0);
         segments.push_back (Segment (p1.GetPolar (), p2.GetPolar ()));
     }
 
     /* top */
     for (int i = 0; i < 4; ++i) {
-        p1.Set (step * i,         4 * step);
-        p2.Set (step * (i + 1),   4 * step);
+        p1.Set (xoff + step * i,         -4 * step);
+        p2.Set (xoff + step * (i + 1),   -4 * step);
         segments.push_back (Segment (p1.GetPolar (), p2.GetPolar ()));
     }
 
     /* left */
     for (int i = 0; i < 4; ++i) {
-        p1.Set (0.0, step * i);
-        p2.Set (0.0, step * (i + 1));
+        p1.Set (xoff, -step * i);
+        p2.Set (xoff, -step * (i + 1));
         segments.push_back (Segment (p1.GetPolar (), p2.GetPolar ()));
     }
 
 
     /* right */
     for (int i = 0; i < 4; ++i) {
-        p1.Set (4 * step, step * i);
-        p2.Set (4 * step, step * (i + 1));
+        p1.Set (xoff + 4 * step, -step * i);
+        p2.Set (xoff + 4 * step, -step * (i + 1));
         segments.push_back (Segment (p1.GetPolar (), p2.GetPolar ()));
     }
 
