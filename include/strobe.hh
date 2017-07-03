@@ -13,6 +13,7 @@
 #define ANGLE_DELTA (ANGLE_MAX / ANGLE_STEPS)
 
 #define RADIANS(deg) ((deg) * 0.0174533)
+#define DEGREES(rad) ((rad) * 57.2958)
 
 ALLEGRO_COLOR mkcol (int r, int g, int b, int a);
 
@@ -28,8 +29,15 @@ class Point {
 public:
 
     Point (float x, float y) : x_(x), y_(y) {}
+    Point () : x_(0.0), y_(0.0) {}
+
     inline float GetX () const { return x_; }
     inline float GetY () const { return y_; }
+
+    inline void Set (float x, float y) { 
+        x_ = x; 
+        y_ = y;
+    }
 
     PolarPoint GetPolar () const;
 };
@@ -46,6 +54,12 @@ public:
 
     PolarPoint (float radius, float angle) : 
         radius_(radius), angle_(angle), cx_(WIDTH / 2.0), cy_(HEIGHT / 2.0) {}
+
+    inline float GetRadius () const { return radius_; }
+    inline float GetTheta () const { return angle_; }
+
+    inline void Rotate (float theta) { angle_ += theta; }
+
     Point GetXY (float angle) const;
 };
 
@@ -69,7 +83,14 @@ public:
     inline const PolarPoint& GetStart () const { return p1_; } 
     inline const PolarPoint& GetEnd () const { return p2_; } 
 
+    inline void Rotate (float theta) {  
+        p1_.Rotate (theta);
+        p2_.Rotate (theta);
+    }
+
     void Draw (float angle, ALLEGRO_COLOR col) const;
+
+    Segment SaveAt (float theta) const;
 };
 
 /*

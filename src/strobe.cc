@@ -10,7 +10,7 @@
 
 PolarPoint Point::GetPolar () const {
     float radius = sqrtf (x_ * x_ + y_ * y_);
-    float angle = atan2 (y_, x_);
+    float angle = DEGREES(atan2 (y_, x_));
     return PolarPoint (radius, angle);
 }
 
@@ -24,6 +24,12 @@ void Segment::Draw (float angle, ALLEGRO_COLOR col) const {
     Point p1 = p1_.GetXY (angle);
     Point p2 = p2_.GetXY (angle);
     al_draw_line (p1.GetX (), p1.GetY (), p2.GetX (), p2.GetY (), col, 1);
+}
+
+Segment Segment::SaveAt (float theta) const {
+    PolarPoint a = GetStart (), b = GetEnd ();
+    return Segment (PolarPoint (a.GetRadius (), a.GetTheta () + theta),
+            PolarPoint (b.GetRadius (), b.GetTheta () + theta));
 }
 
 void Rectangle::Draw (ALLEGRO_COLOR col) const {
