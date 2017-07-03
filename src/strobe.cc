@@ -33,6 +33,7 @@ Segment Segment::SaveAt (double theta) const {
 }
 
 void FadeSegment::Draw () {
+    if (Remove ()) { return; }
     Point p1 = p1_.GetXY (0);
     Point p2 = p2_.GetXY (0);
     al_draw_line (p1.GetX (), p1.GetY (), p2.GetX (), p2.GetY (), col_, 3);
