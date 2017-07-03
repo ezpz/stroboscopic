@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <vector>
 #include <cmath>
+#include <ctime>
 #include <algorithm>
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_primitives.h>
@@ -17,6 +18,7 @@ void check_overlap (const std::vector< Segment > &segments,
     if (static_cast< long >(theta) % static_cast< long >(TARGET_THETA)) { 
         return; /* not on the period of the flash */
     }
+    flash.Draw ();
     std::vector< Segment >::const_iterator SIT = segments.begin (),
         SEND = segments.end ();
     for (; SIT != SEND; ++SIT) {
@@ -35,7 +37,7 @@ void update (struct GameState &s, const Rectangle &flash) {
     s.ref_mark.Draw ();
     s.ref_mark.Tick ();
 
-    flash.Draw ();
+    check_overlap (s.segments, flash, s.ref_mark.Theta ());
 
     if (s.ref_mark.Looped ()) {
         std::vector< Segment >::iterator SIT = captured.begin (), 
@@ -51,7 +53,6 @@ void update (struct GameState &s, const Rectangle &flash) {
         for (; SIT != SEND; ++SIT) {
             SIT->Draw (s.ref_mark.Theta ());
         }
-        check_overlap (s.segments, flash, s.ref_mark.Theta ());
     }
 
     s.border.Draw ();
@@ -134,6 +135,8 @@ int main (int argc, char **argv) {
           hq = hhalf / 2.0;
 
     Rectangle capture(WIDTH / 2.0, hhalf - hq, WIDTH, hhalf + hq);
+
+    srand (time (NULL));
 
     generate_shape (state.segments, TARGET_THETA);
 

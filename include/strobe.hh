@@ -107,10 +107,10 @@ class Rectangle {
 public:
 
     Rectangle (float x1, float y1, float x2, float y2) : 
-        p1_(x1,y1), p2_(x2,y2), col_(mkcol(30,255,10,30)) {}
+        p1_(x1,y1), p2_(x2,y2), col_(mkcol(255,255,255,30)) {}
 
     Rectangle (const Point &p1, const Point &p2) : 
-        p1_(p1), p2_(p2), col_(mkcol(30,255,10,30)) {}
+        p1_(p1), p2_(p2), col_(mkcol(255,255,255,30)) {}
 
     inline void Draw () const {
         Draw (col_); 
